@@ -174,6 +174,9 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                             if (filtrado.length <= 3) {
                                 alturaInput = novoValor
                             }
+                            if (alturaInput.isBlank() || pesoInput.isBlank()) {
+                                isCardVisible = false
+                            }
                         },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
@@ -201,7 +204,9 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                         colors = OutlinedTextFieldDefaults.colors(
                             cursorColor = colorResource(R.color.cor_app),
                             focusedBorderColor = colorResource(R.color.cor_app),
-                            unfocusedBorderColor = colorResource(R.color.cor_app)
+                            unfocusedBorderColor = colorResource(R.color.cor_app),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
                         )
                     )
 
@@ -219,6 +224,9 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                                 if (casasDecimais <= 2) {
                                     pesoInput = novoValor
                                 }
+                            }
+                            if (alturaInput.isBlank() || pesoInput.isBlank()) {
+                                isCardVisible = false
                             }
                         },
                         singleLine = true,
@@ -247,7 +255,9 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                         colors = OutlinedTextFieldDefaults.colors(
                             cursorColor = colorResource(R.color.cor_app),
                             focusedBorderColor = colorResource(R.color.cor_app),
-                            unfocusedBorderColor = colorResource(R.color.cor_app)
+                            unfocusedBorderColor = colorResource(R.color.cor_app),
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black
                         )
                     )
 
@@ -258,33 +268,40 @@ fun IMCScreen(modifier: Modifier = Modifier) {
                         onClick = {
                             keyboardController?.hide()
 
-                            val altura = alturaInput.toDoubleOrNull() ?: 0.0
-                            val alturaMetro = altura / 100
-                            val peso = pesoInput.replace(",", ".1").toDoubleOrNull() ?: 0.0
+                            if (alturaInput.isNotBlank() && pesoInput.isNotBlank()) {
+                                val altura = alturaInput.toDoubleOrNull() ?: 0.0
+                                val alturaMetro = altura / 100
+                                val peso = pesoInput.replace(",", ".1").toDoubleOrNull() ?: 0.0
 
-                            imc = peso / (alturaMetro * alturaMetro)
+                                if (alturaMetro > 0.0 && peso > 0.0) {
+                                    imc = peso / (alturaMetro * alturaMetro)
 
-                            if (imc < 18.5) {
-                                statusIMC = "Abaixo do peso"
-                                corStatusIMC = corStatusAbaixo
-                            } else if (imc >= 18.5 && imc < 25.0) {
-                                statusIMC = "Peso ideal"
-                                corStatusIMC = corStatusIdeal
-                            } else if (imc >= 25.0 && imc < 30.0) {
-                                statusIMC = "Levemente acima do peso"
-                                corStatusIMC = corStatusLevementeAcima
-                            } else if (imc >= 30.0 && imc < 35.0) {
-                                statusIMC = "Obesidade grau 1"
-                                corStatusIMC = corStatusAbaixo
-                            } else if (imc >= 35.0 && imc < 40.0) {
-                                statusIMC = "Obesidade grau 2"
-                                corStatusIMC = corStatusAbaixo
+                                    if (imc < 18.5) {
+                                        statusIMC = "Abaixo do peso"
+                                        corStatusIMC = corStatusAbaixo
+                                    } else if (imc >= 18.5 && imc < 25.0) {
+                                        statusIMC = "Peso ideal"
+                                        corStatusIMC = corStatusIdeal
+                                    } else if (imc >= 25.0 && imc < 30.0) {
+                                        statusIMC = "Levemente acima do peso"
+                                        corStatusIMC = corStatusLevementeAcima
+                                    } else if (imc >= 30.0 && imc < 35.0) {
+                                        statusIMC = "Obesidade grau 1"
+                                        corStatusIMC = corStatusAbaixo
+                                    } else if (imc >= 35.0 && imc < 40.0) {
+                                        statusIMC = "Obesidade grau 2"
+                                        corStatusIMC = corStatusAbaixo
+                                    } else {
+                                        statusIMC = "Obesidade grau 3"
+                                        corStatusIMC = corStatusAbaixo
+                                    }
+                                    isCardVisible = true
+                                } else {
+                                    isCardVisible = false
+                                }
                             } else {
-                                statusIMC = "Obesidade grau 3"
-                                corStatusIMC = corStatusAbaixo
+                                isCardVisible = false
                             }
-
-                            isCardVisible = true
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorResource(R.color.cor_app),
